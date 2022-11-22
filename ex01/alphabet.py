@@ -48,6 +48,7 @@ def game():
                 del defect[defect.index(input_chr)]
         if correct_number == user_input:
             return True
+    #ここが差分です
 
 if __name__ == "__main__":
     main()
