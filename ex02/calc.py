@@ -1,10 +1,12 @@
 import tkinter as tk
 import tkinter.messagebox as tkm
 
+#連続してもいい文字
 consecutive_ok = ["(",")"]
 for i in range(10):
     consecutive_ok.append(str(i))
 
+#このままevalにつっこむとエラーか地学処理をしそうなので変換する文字
 tran = {"x":"*","÷":"/","^":"**"}
 
 
@@ -15,13 +17,22 @@ def button_click(event):
         que = entry.get()
         for olds,news in tran.items():
             que = que.replace(olds,news)
-        entry.delete(0,tk.END)
-        entry.insert(tk.END,eval(que))
+        try:
+            answer = eval(que)
+            entry.delete(0,tk.END)
+            entry.insert(tk.END,answer)
+        except: 
+            #0割り等のエラー時に対応
+            tkm.showerror(txt,"エラーが発生しました")
     elif txt=="C":
         entry.delete(0,tk.END)
+        #連続してもいい文字かを判定
     elif txt in consecutive_ok:
+        #連続してもいい文字なのでそのまま入れる
         entry.insert(tk.END,txt)
     else:
+        #連続したらまずいので最後の文字を取得して
+        #それも連続してはいけなかったら追加しない
         que = entry.get()
         if que[-1] in consecutive_ok:
             entry.insert(tk.END,txt)
