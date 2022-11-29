@@ -37,7 +37,10 @@ r += 1
 
 for i in range(9,-1,-1):
     make_button(str(i))
-make_button("+")
-make_button("=")
+
+#こっちの方が良さそうなので改善
+operater = ["+","="]
+for v in operater:
+    make_button(v)
 
 root.mainloop()
