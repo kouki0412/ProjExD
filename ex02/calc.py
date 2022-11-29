@@ -55,12 +55,12 @@ def button_click(event):
         #連続してもいい文字なのでそのまま入れる
         entry.insert(tk.END,txt)
     else:
-        #連続したらまずいので最後の文字を取得して
-        #それも連続してはいけなかったら追加しない
-        #マイナスのみ最初についてもいい
         que = entry.get()
+        #マイナスのみ最初についてもいい
         if len(que)==0 and txt=="-":
             entry.insert(tk.END,txt)
+        #連続したらまずいので最後の文字を取得して
+        #それも連続してはいけなかったら追加しない
         elif len(que)>0 and que[-1] in consecutive_ok:
             entry.insert(tk.END,txt)
     #tkm.showinfo(txt,f"{txt}が押されました")
