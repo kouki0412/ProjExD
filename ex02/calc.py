@@ -29,16 +29,25 @@ def button_click(event):
     elif txt == "back":
         siz = len(entry.get())
         entry.delete(max(siz-1,0),tk.END)
-    elif txt in ["1/x","√"]:
+    elif txt == "1/x":
+        que = entry.get()
+        if len(que)>0:
+            entry.delete(0,tk.END)
+            que = "1/("+que+")"
+            entry.insert(tk.END,que)
+    #未実装リストに入ってたら表示
+    elif txt in ["√"]:
         tkm.showwarning("なんてこったい","まだ実装されていません！")
-    elif txt =="?":
-        tkm.showinfo("ヘルプ","\
-        このプログラムは電卓です\n\
-        1/xで逆数の計算を\n\
-        √で平方根の計算をします\n\
-        backで一文字消します\n\
-        Cですべての文字を消します")
-        #連続してもいい文字かを判定
+    #float型になった時にintに強制的に戻すボタン
+    elif txt =="int":
+        try:
+            #floatにしてintにしてstringに直す(まずい)
+            que = str(int(float((entry.get()))))
+            entry.delete(0,tk.END)
+            entry.insert(tk.END,que)
+        except:
+            pass
+    #連続してもいい文字かを判定
     elif txt in consecutive_ok:
         #連続してもいい文字なのでそのまま入れる
         entry.insert(tk.END,txt)
@@ -57,6 +66,7 @@ def button_click(event):
 def make_button(s):
     global r,c
     siz = 1
+    # "="だけ横に長くする
     if s == "=":
        siz = 2 
     button = tk.Button(root,text=s,font=("",30),width=4*siz,height=2)
@@ -85,7 +95,7 @@ key_mat = [
         ["^","(",")","÷","back"],
         ["7","8","9","x","1/x"],
         ["4","5","6","-","√"],
-        ["1","2","3","+","?"],
+        ["1","2","3","+","int"],
         ["0",".","C","="] 
        ]
 
