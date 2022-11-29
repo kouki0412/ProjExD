@@ -10,7 +10,7 @@ def button_click(event):
         entry.insert(tk.END,eval(que))
     else:
         entry.insert(tk.END,txt)
-    tkm.showinfo(txt,f"{txt}が押されました")
+    #tkm.showinfo(txt,f"{txt}が押されました")
 
 def make_button(s):
     global r,c
