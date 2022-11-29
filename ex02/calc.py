@@ -18,29 +18,32 @@ def make_button(s):
     button.bind("<1>",button_click)
     button.grid(row=r,column=c)
     c += 1
-    if c%4==0:
+    if c%5==0:
         r += 1
         c = 1
 
 root = tk.Tk()
 root.title("Calc")
-root.geometry("300x500")
+root.geometry("400x600")
 
 
 r = 1
 c = 1
 
-entry = tk.Entry(root,justify="right",width=10,font=("",40))
-entry.grid(row=r,column=c,columnspan=3)
+entry = tk.Entry(root,justify="right",width=15,font=("",40))
+entry.grid(row=r,column=c,columnspan=4)
 
 r += 1
 
-for i in range(9,-1,-1):
-    make_button(str(i))
-
-#こっちの方が良さそうなので改善
-operater = ["+","="]
-for v in operater:
-    make_button(v)
+key_mat = [
+        ["^","(",")","/"],
+        ["7","8","9","*"],
+        ["4","5","6","-"],
+        ["1","2","3","+"],
+        ["0",".","C","="] 
+       ]
+for key_vec in key_mat:
+    for key in key_vec:
+        make_button(key)
 
 root.mainloop()
