@@ -6,7 +6,7 @@ consecutive_ok = ["(",")"]
 for i in range(10):
     consecutive_ok.append(str(i))
 
-#このままevalにつっこむとエラーか地学処理をしそうなので変換する文字
+#このままevalにつっこむとエラーか想定と違う処理をしそうなので変換する文字
 tran = {"x":"*","÷":"/","^":"**"}
 
 
