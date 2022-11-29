@@ -1,14 +1,18 @@
 import tkinter as tk
 import tkinter.messagebox as tkm
 
+def button_click(event):
+    btn = event.widget
+    txt = btn["text"]
+    tkm.showinfo(txt,f"{txt}が押されました")
+
 root = tk.Tk()
 root.title("Calc")
 root.geometry("300x500")
 
-button = dict()
-
 for i in range(10):
-    button[str(i)] = tk.Button(root,text=str(i),font=("",30),width=4,height=2)
-    button[str(i)].grid(row =(9-i)//3+1,column=(9-i)%3+1)
+    button = tk.Button(root,text=str(i),font=("",30),width=4,height=2)
+    button.bind("<1>",button_click)
+    button.grid(row =(9-i)//3+1,column=(9-i)%3+1)
 
 root.mainloop()
