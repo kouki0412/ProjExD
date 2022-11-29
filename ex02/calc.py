@@ -102,6 +102,9 @@ key_mat = [
         ["0",".","C","="] 
        ]
 
+#キーの二次元配列(key_mat)
+#キーの一次元配列(key_vec) ["4","5","6","-","√"]
+
 for key_vec in key_mat:
     for key in key_vec:
         make_button(key)
