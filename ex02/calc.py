@@ -26,6 +26,18 @@ def button_click(event):
             tkm.showerror(txt,"エラーが発生しました")
     elif txt=="C":
         entry.delete(0,tk.END)
+    elif txt == "back":
+        siz = len(entry.get())
+        entry.delete(max(siz-1,0),tk.END)
+    elif txt in ["1/x","√"]:
+        tkm.showwarning("なんてこったい","まだ実装されていません！")
+    elif txt =="?":
+        tkm.showinfo("ヘルプ","\
+        このプログラムは電卓です\n\
+        1/xで逆数の計算を\n\
+        √で平方根の計算をします\n\
+        backで一文字消します\n\
+        Cですべての文字を消します")
         #連続してもいい文字かを判定
     elif txt in consecutive_ok:
         #連続してもいい文字なのでそのまま入れる
@@ -33,40 +45,47 @@ def button_click(event):
     else:
         #連続したらまずいので最後の文字を取得して
         #それも連続してはいけなかったら追加しない
+        #マイナスのみ最初についてもいい
         que = entry.get()
-        if que[-1] in consecutive_ok:
+        if len(que)==0 and txt=="-":
+            entry.insert(tk.END,txt)
+        elif len(que)>0 and que[-1] in consecutive_ok:
             entry.insert(tk.END,txt)
     #tkm.showinfo(txt,f"{txt}が押されました")
 
+#ボタンを追加する関数
 def make_button(s):
     global r,c
-    button = tk.Button(root,text=s,font=("",30),width=4,height=2)
+    siz = 1
+    if s == "=":
+       siz = 2 
+    button = tk.Button(root,text=s,font=("",30),width=4*siz,height=2)
     button.bind("<1>",button_click)
-    button.grid(row=r,column=c)
+    button.grid(row=r,column=c,columnspan=siz)
     c += 1
-    if c%5==0:
+    if c%6==0:
         r += 1
         c = 1
 
 root = tk.Tk()
 root.title("Calc")
-root.geometry("400x600")
+root.geometry("500x600")
 
 
 r = 1
 c = 1
 
-entry = tk.Entry(root,justify="right",width=15,font=("",40))
-entry.grid(row=r,column=c,columnspan=4)
+entry = tk.Entry(root,justify="right",width=17,font=("",40))
+entry.grid(row=r,column=c,columnspan=6)
 
 r += 1
 
 #このレイアウトになるようにキーを配置
 key_mat = [
-        ["^","(",")","÷"],
-        ["7","8","9","x"],
-        ["4","5","6","-"],
-        ["1","2","3","+"],
+        ["^","(",")","÷","back"],
+        ["7","8","9","x","1/x"],
+        ["4","5","6","-","√"],
+        ["1","2","3","+","?"],
         ["0",".","C","="] 
        ]
 
