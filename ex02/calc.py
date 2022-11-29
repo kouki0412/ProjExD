@@ -24,11 +24,14 @@ def button_click(event):
         except: 
             #0割り等のエラー時に対応
             tkm.showerror(txt,"エラーが発生しました")
+    #全削除機能
     elif txt=="C":
         entry.delete(0,tk.END)
+    #一文字削除機能
     elif txt == "back":
         siz = len(entry.get())
         entry.delete(max(siz-1,0),tk.END)
+    #逆数にする機能
     elif txt == "1/x":
         que = entry.get()
         if len(que)>0:
@@ -38,7 +41,7 @@ def button_click(event):
     #未実装リストに入ってたら表示
     elif txt in ["√"]:
         tkm.showwarning("なんてこったい","まだ実装されていません！")
-    #float型になった時にintに強制的に戻すボタン
+    #float型になった時にintに強制的に戻す機能
     elif txt =="int":
         try:
             #floatにしてintにしてstringに直す(まずい)
