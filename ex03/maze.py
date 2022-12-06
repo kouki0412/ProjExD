@@ -29,8 +29,9 @@ if __name__ == "__main__":
     images = tk.PhotoImage(file="fig/0.png")
 
     cx = 300; cy = 400
-    canvas.create_image(cx,cy,image=images,tags="player")
     mp = maze_maker.make_maze(15,9)
+    maze_maker.show_maze(canvas,mp)
+    canvas.create_image(cx,cy,image=images,tags="player")
     key = ""
     root.bind("<KeyPress>",key_down)
     root.bind("<KeyRelease>",key_up)
