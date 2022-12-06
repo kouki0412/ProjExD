@@ -3,8 +3,8 @@ import maze_maker
 import random
 import queue
 import copy
-import time
 
+#幅優先探索の時とかにつかう変数。便利。
 dx = [0,1,0,-1]
 dy = [1,0,-1,0]
 
@@ -17,7 +17,7 @@ def key_up(event):
     key = ""
 
 
-
+#自動と手動を切り替える関数
 def mode_change():
     global jid, mode
     if key=="s" and mode!=0:
@@ -94,6 +94,9 @@ def main_proc():
     canvas.coords("player",cx,cy)
     jid = root.after(100,main_proc)
 
+#スタートを動けるところからランダムに選ぶ。かべのなかにいる。にはならない。
+#ゴールは幅優先探索でスタートから最も遠いところに選ばれる
+
 def make_st_and_gl():
     global mx,my,gx,gy
     indexs = []
@@ -114,6 +117,8 @@ def make_st_and_gl():
             if seen[nx][ny]==0:
                 q.put((nx,ny))
                 seen[nx][ny] = 1
+    #ここめっちゃ怪しいです。
+    #幅優先探索なので最後に更新した場所が一番遠いはず
         gx = x; gy = y
     
 if __name__ == "__main__":
