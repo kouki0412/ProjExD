@@ -11,13 +11,13 @@ def key_up(event):
 
 def main_proc():
     global cx,cy,mx,my
-    if key == "Up":
+    if key == "Up" and mp[mx][my-1]==0:
         my -= 1
-    if key == "Down":
+    if key == "Down" and mp[mx][my+1]==0:
         my += 1
-    if key == "Left":
+    if key == "Left" and mp[mx-1][my]==0:
         mx -= 1
-    if key == "Right":
+    if key == "Right" and mp[mx+1][my]==0:
         mx += 1
     cx = mx*100+50
     cy = my*100+50
