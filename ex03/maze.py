@@ -1,5 +1,12 @@
 import tkinter as tk
 import maze_maker
+import random
+import queue
+import copy
+import time
+
+dx = [0,1,0,-1]
+dy = [1,0,-1,0]
 
 def key_down(event):
     global key
@@ -9,8 +16,71 @@ def key_up(event):
     global key
     key = ""
 
+
+
+def mode_change():
+    global jid, mode
+    if key=="s" and mode!=0:
+        mode = 0
+        solve()
+    elif key=="m" and mode !=1:
+        mode = 1
+        main_proc()
+    root.after(100,mode_change)
+
+#今いる位置からゴールまで自動的に動いてくれる機能
+def solve():
+    global mx,my,jid,answer
+    jid = None
+    que = queue.Queue()
+    x = mx; y = my
+    seen = copy.deepcopy(mp)
+    #幅優先探索でゴールまでの経路を探索
+    seen[x][y] = 2
+    que.put((mx,my,2))
+    while(not que.empty()):
+        x, y , cnt = que.get()
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if seen[nx][ny]==0:
+                que.put((nx,ny,cnt+1))
+                seen[nx][ny] = cnt + 1
+    x = gx; y = gy 
+
+    #探索結果から経路復元
+    answer = []
+    answer.append((gx,gy))
+    while(x!=mx or y!=my):
+        for i in range(4):
+            nx = x+dx[i]
+            ny = y+dy[i]
+            if seen[x][y]-1==seen[nx][ny]:
+                answer.append((nx,ny))
+                x = nx
+                y = ny
+    reversed(answer)
+    solve_move()
+
+#こうかとんを実際に動かす関数(動かし終わったらmain_procに戻る)
+def solve_move():
+    global mx,my,cx,cy,answer,jid
+    if len(answer)==0:
+        mode = 1
+        main_proc()
+    else:
+        mx,my = answer.pop()
+        cx = mx*100+50
+        cy = my*100+50
+        canvas.coords("player",cx,cy)
+        root.after(100,solve_move)
+
+
+    
+
+
 def main_proc():
-    global cx,cy,mx,my
+    global cx,cy,mx,my,jid
     if key == "Up" and mp[mx][my-1]==0:
         my -= 1
     if key == "Down" and mp[mx][my+1]==0:
@@ -22,7 +92,29 @@ def main_proc():
     cx = mx*100+50
     cy = my*100+50
     canvas.coords("player",cx,cy)
-    root.after(100,main_proc)
+    jid = root.after(100,main_proc)
+
+def make_st_and_gl():
+    global mx,my,gx,gy
+    indexs = []
+    for i,vec in enumerate(mp):
+        for j,val in enumerate(vec):
+            if val == 0:
+                indexs.append((i,j))
+    mx,my = random.choice(indexs)
+    q = queue.Queue()
+    x = mx; y = my
+    seen = copy.deepcopy(mp)
+    q.put((mx,my))
+    while(not q.empty()):
+        x, y = q.get()
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if seen[nx][ny]==0:
+                q.put((nx,ny))
+                seen[nx][ny] = 1
+        gx = x; gy = y
     
 if __name__ == "__main__":
     root = tk.Tk()
@@ -31,12 +123,19 @@ if __name__ == "__main__":
     images = tk.PhotoImage(file="fig/0.png")
     mx = 1; my = 1
     cx = mx*100+50; cy = my*150+50
+    answer = []
+    mode = 1
+    gx = 0; gy = 0
     mp = maze_maker.make_maze(15,9)
     maze_maker.show_maze(canvas,mp)
     canvas.create_image(cx,cy,image=images,tags="player")
     key = ""
     root.bind("<KeyPress>",key_down)
     root.bind("<KeyRelease>",key_up)
+    make_st_and_gl()
+    goal = tk.PhotoImage(file="fig/goal.png")
+    canvas.create_image(gx*100+50,gy*100+50,image=goal,tags="goal")
+    mode_change()
     main_proc()
     canvas.pack()
     root.mainloop()
