@@ -10,15 +10,17 @@ def key_up(event):
     key = ""
 
 def main_proc():
-    global cx,cy
+    global cx,cy,mx,my
     if key == "Up":
-        cy -= 20
+        my -= 1
     if key == "Down":
-        cy += 20
+        my += 1
     if key == "Left":
-        cx -= 20
+        mx -= 1
     if key == "Right":
-        cx += 20
+        mx += 1
+    cx = mx*100+50
+    cy = my*100+50
     canvas.coords("player",cx,cy)
     root.after(100,main_proc)
     
@@ -27,8 +29,8 @@ if __name__ == "__main__":
     root.title("迷えるこうかとん")
     canvas = tk.Canvas(width=1500,height=900,bg="black")
     images = tk.PhotoImage(file="fig/0.png")
-
-    cx = 300; cy = 400
+    mx = 1; my = 1
+    cx = mx*100+50; cy = my*150+50
     mp = maze_maker.make_maze(15,9)
     maze_maker.show_maze(canvas,mp)
     canvas.create_image(cx,cy,image=images,tags="player")
