@@ -9,5 +9,6 @@ if __name__ == "__main__":
 
     cx = 300; cy = 400
     canvas.create_image(cx,cy,image=images)
+    key = ""
     canvas.pack()
     root.mainloop()
