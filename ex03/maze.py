@@ -18,7 +18,7 @@ def key_up(event):
 
 #自動と手動を切り替える関数
 def mode_change():
-    global jid, mode
+    global mode
     if key=="s" and mode!=0:
         mode = 0
         solve()
@@ -63,7 +63,7 @@ def solve():
 
 #こうかとんを実際に動かす関数(動かし終わったらmain_procに戻る)
 def solve_move():
-    global mx,my,cx,cy,answer,jid
+    global mx,my,cx,cy,answer
     if len(answer)==0:
         mode = 1
         main_proc()
