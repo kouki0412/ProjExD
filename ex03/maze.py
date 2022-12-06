@@ -30,6 +30,7 @@ if __name__ == "__main__":
 
     cx = 300; cy = 400
     canvas.create_image(cx,cy,image=images,tags="player")
+    mp = maze_maker.make_maze(15,9)
     key = ""
     root.bind("<KeyPress>",key_down)
     root.bind("<KeyRelease>",key_up)
