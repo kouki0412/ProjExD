@@ -16,7 +16,6 @@ def key_up(event):
     global key
     key = ""
 
-
 #自動と手動を切り替える関数
 def mode_change():
     global jid, mode
@@ -76,8 +75,6 @@ def solve_move():
         root.after(100,solve_move)
 
 
-    
-
 
 def main_proc():
     global cx,cy,mx,my,jid
@@ -128,8 +125,11 @@ if __name__ == "__main__":
     images = tk.PhotoImage(file="fig/0.png")
     mx = 1; my = 1
     cx = mx*100+50; cy = my*150+50
+    # ゴールまでの経路を入れる変数
     answer = []
+    # プレイヤーが操作しているか自動なのか(1は手動、0は自動)
     mode = 1
+    # ゴールがある座標
     gx = 0; gy = 0
     mp = maze_maker.make_maze(15,9)
     maze_maker.show_maze(canvas,mp)
@@ -137,9 +137,11 @@ if __name__ == "__main__":
     key = ""
     root.bind("<KeyPress>",key_down)
     root.bind("<KeyRelease>",key_up)
+    #スタートとゴールを生成する関数
     make_st_and_gl()
     goal = tk.PhotoImage(file="fig/goal.png")
     canvas.create_image(gx*100+50,gy*100+50,image=goal,tags="goal")
+    #モードを管理する関数を動かす
     mode_change()
     main_proc()
     canvas.pack()
