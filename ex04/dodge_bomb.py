@@ -5,6 +5,7 @@ import random
 def main():
     pg.display.set_caption("逃げろ!こうかとん")
     scrn_sfc = pg.display.set_mode((1600,900))
+    scrn_rct = scrn_sfc.get_rect()
 
     bcsc_sfc = pg.image.load("fig/pg_bg.jpg")
     bcsc_rct = bcsc_sfc.get_rect()
@@ -16,10 +17,14 @@ def main():
     px, py = 900, 400
     plyr_rct.center = px,py
 
-    bomb_sfc = pg.Surface((100,100))
+    bomb_sfc = pg.Surface((20,20))
     bomb_sfc.set_colorkey((0,0,0))
-    pg.draw.circle(bomb_sfc,(255,0,0),(50,50),10)
-    bx, by = (random.randint(0,1600),random.randint(0,900))
+    pg.draw.circle(bomb_sfc,(255,0,0),(10,10),10)
+    bomb_rct = bomb_sfc.get_rect()
+    bx, by = (random.randint(0,scrn_rct.width),random.randint(0,scrn_rct.height))
+
+    dx, dy = 1, 1
+
     clock = pg.time.Clock()
     #clock.tick(0.5)
     while True:
@@ -37,13 +42,22 @@ def main():
         if key_list[pg.K_RIGHT]:
             px += 1
         plyr_rct.center = px,py
+        
+        bx += dx
+        by += dy
+        if bx < 0 or scrn_rct.width < bx:
+            dx *= -1
+        if by < 0 or scrn_rct.height < by:
+            dy *= -1
+        bomb_rct.center = bx, by
+        if plyr_rct.colliderect(bomb_rct):
+            clock.tick(0.5)
+            return
         scrn_sfc.blit(plyr_sfc,plyr_rct)
-        scrn_sfc.blit(bomb_sfc,(bx,by))
+        scrn_sfc.blit(bomb_sfc,bomb_rct)
         pg.display.update()
         clock.tick(1000)
         
-    
-
 
 if __name__ == "__main__":
     pg.init()
