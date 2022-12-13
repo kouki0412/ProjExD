@@ -8,11 +8,11 @@ def main():
     bcsc_sfc = pg.image.load("fig/pg_bg.jpg")
     bcsc_rct = bcsc_sfc.get_rect()
     bcsc_rct.center = 800 , 450
-
+    px, py = 900, 400
     plyr_sfc = pg.image.load("fig/0.png")
     plyr_sfc = pg.transform.rotozoom(plyr_sfc,0,2.0)
     plyr_rct = plyr_sfc.get_rect()
-    plyr_rct.center = 900,400
+    plyr_rct.center = px,py
     clock = pg.time.Clock()
     #clock.tick(0.5)
     while True:
@@ -20,6 +20,16 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
+        key_list = pg.key.get_pressed()
+        if key_list[pg.K_UP]:
+            py -= 1
+        if key_list[pg.K_DOWN]:
+            py += 1
+        if key_list[pg.K_LEFT]:
+            px -= 1
+        if key_list[pg.K_RIGHT]:
+            px += 1
+        plyr_rct.center = px,py
         scrn_sfc.blit(plyr_sfc,plyr_rct)
         pg.display.update()
         clock.tick(1000)
