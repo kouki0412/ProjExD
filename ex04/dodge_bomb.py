@@ -2,6 +2,34 @@ import pygame as pg
 import sys
 import random
 
+def mode_change():
+    pass
+
+
+def check_bomb_board(scrn_rct,bomb_rct):
+    global dx,dy
+    if bomb_rct.left < scrn_rct.left or bomb_rct.right > scrn_rct.right:
+        dx *= -1
+    if bomb_rct.top < scrn_rct.top or bomb_rct.bottom > scrn_rct.bottom:
+        dy *= -1
+    bomb_rct.centerx += dx
+    bomb_rct.centery += dy
+
+KEYS = [pg.K_UP,pg.K_DOWN,pg.K_LEFT,pg.K_RIGHT]
+DXY = {pg.K_UP:(0,-1),pg.K_DOWN:(0,1),pg.K_LEFT:(-1,0),pg.K_RIGHT:(1,0)}
+
+def move_player(scrn_rct,plyr_rct,key_list):
+    for key in KEYS:
+        if key_list[key]:
+            Dx, Dy = DXY[key]
+            plyr_rct.centerx += Dx
+            plyr_rct.centery += Dy
+
+            if plyr_rct.left < scrn_rct.left or plyr_rct.right > scrn_rct.right:
+                plyr_rct.centerx -= Dx
+            if plyr_rct.top < scrn_rct.top or plyr_rct.bottom > scrn_rct.bottom:
+                plyr_rct.centery -= Dy
+
 def main():
     pg.display.set_caption("逃げろ!こうかとん")
     scrn_sfc = pg.display.set_mode((1600,900))
@@ -22,10 +50,8 @@ def main():
     pg.draw.circle(bomb_sfc,(255,0,0),(10,10),10)
     bomb_rct = bomb_sfc.get_rect()
     bx, by = (random.randint(0,scrn_rct.width),random.randint(0,scrn_rct.height))
-
-    dx, dy = 1, 1
-
     clock = pg.time.Clock()
+
     #clock.tick(0.5)
     while True:
         scrn_sfc.blit(bcsc_sfc,bcsc_rct)
@@ -33,23 +59,11 @@ def main():
             if event.type == pg.QUIT:
                 return
         key_list = pg.key.get_pressed()
-        if key_list[pg.K_UP]:
-            py -= 1
-        if key_list[pg.K_DOWN]:
-            py += 1
-        if key_list[pg.K_LEFT]:
-            px -= 1
-        if key_list[pg.K_RIGHT]:
-            px += 1
-        plyr_rct.center = px,py
-        
-        bx += dx
-        by += dy
-        if bx < 0 or scrn_rct.width < bx:
-            dx *= -1
-        if by < 0 or scrn_rct.height < by:
-            dy *= -1
-        bomb_rct.center = bx, by
+
+        move_player(scrn_rct,plyr_rct,key_list)
+
+        check_bomb_board(scrn_rct,bomb_rct)
+
         if plyr_rct.colliderect(bomb_rct):
             clock.tick(0.5)
             return
@@ -61,6 +75,7 @@ def main():
 
 if __name__ == "__main__":
     pg.init()
+    dx, dy = 1, 1
     main()
     pg.quit()
     sys.exit()
