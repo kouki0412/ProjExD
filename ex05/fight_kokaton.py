@@ -11,7 +11,7 @@ bomb_time = None
 
 class ScreenClass:
     def __init__(self,title,width_height,file):
-        pg.display.set_caption("逃げろ！こうかとん")
+        pg.display.set_caption("負けるな！こうかとん")
         self.sfc = pg.display.set_mode(width_height)
         self.rct = self.sfc.get_rect()
         self.bgi_sfc = pg.image.load(file)
@@ -56,7 +56,7 @@ class BirdClass(pg.sprite.Sprite):
                 self.rct.centery -= delta[1]
         
         self.blit(scrn_obj)
-
+#ビームを管理するクラス
 class BeamClass:
     def __init__(self,color,v,bird_obj,scrn_obj):
         self.sfc = pg.Surface((40, 40))
@@ -89,6 +89,7 @@ class BeamClass:
 
         self.blit(scrn_obj)
 
+
 class BombClass(pg.sprite.Sprite):
 
     def __init__(self,color,r,v,scrn_obj):
@@ -111,6 +112,7 @@ class BombClass(pg.sprite.Sprite):
         self.vy *= yoko
         self.blit(scrn_obj)
 
+#テキストを管理するクラス
 class TextClass:
     def __init__(self,font,size,txt,color,pos):
         self.font = pg.font.Font(font,size)
@@ -131,7 +133,7 @@ def make_bomb(bombs,scrn_obj):
         bombs.append(bomb)
         bomb_time = now_time
 
-
+#指定がなければ一番後ろを消す
 def kill_bomb(bombs,index=-1):
     global bomb_time
     now_time = time.time()
@@ -192,11 +194,11 @@ def main():
             beam = BeamClass((0,0,255),(v),tori,screen)
             beam_time = time.time()
 
+
         if beam != None:
             beam.update(screen,bombs)
             if time.time()-beam_time > 2:
-                beam = None
-            
+                beam = None            
 
         gameover = False
         for bomb in bombs:
