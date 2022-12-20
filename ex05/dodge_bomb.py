@@ -43,6 +43,28 @@ class BirdClass:
                 self.rct.centerx -= delta[0]
                 self.rct.centery -= delta[1]
 
+class BombClass:
+
+    def __init__(self,color,r,v,scrn_obj):
+        self.sfc = pg.Surface((2*r, 2*r)) # 正方形の空のSurface
+        self.sfc.set_colorkey((0, 0, 0))
+        pg.draw.circle(self.sfc, color, (r, r), r)
+        self.rct = self.sfc.get_rect()
+        self.rct.centerx = random.randint(0, scrn_obj.rct.width)
+        self.rct.centery = random.randint(0, scrn_obj.rct.height)
+        self.vx = v[0]
+        self.vy = v[1]
+    
+    def blit(self,scrn_obj):
+        scrn_obj.sfc.blit(self.sfc,self.rct)
+    
+    def update(self,scrn_obj):
+        self.rct.move_ip(self.vx,self.vy)
+        tate, yoko = check_bound(self.rct,scrn_obj.rct)
+        self.vx *= tate
+        self.vy *= yoko
+        self.blit(scrn_obj)
+
 def check_bound(obj_rct, scr_rct):
     """
     第1引数：こうかとんrectまたは爆弾rect
@@ -68,14 +90,8 @@ def main():
     tori.blit(screen) 
 
     # 練習５
-    bomb_sfc = pg.Surface((20, 20)) # 正方形の空のSurface
-    bomb_sfc.set_colorkey((0, 0, 0))
-    pg.draw.circle(bomb_sfc, (255, 0, 0), (10, 10), 10)
-    bomb_rct = bomb_sfc.get_rect()
-    bomb_rct.centerx = random.randint(0, screen.rct.width)
-    bomb_rct.centery = random.randint(0, screen.rct.height)
-    screen.sfc.blit(bomb_sfc, bomb_rct) 
-    vx, vy = +1, +1
+    bomb = BombClass((255,0,0),10,(1,1),screen)
+    bomb.blit(screen)
 
     # 練習２
     while True:
@@ -89,14 +105,10 @@ def main():
         tori.blit(screen) # 練習3
 
         # 練習６
-        bomb_rct.move_ip(vx, vy)
-        screen.sfc.blit(bomb_sfc, bomb_rct) 
-        yoko, tate = check_bound(bomb_rct, screen.rct)
-        vx *= yoko
-        vy *= tate
+        bomb.update(screen)
 
         # 練習８
-        if tori.rct.colliderect(bomb_rct):
+        if tori.rct.colliderect(bomb.rct):
             return
 
         pg.display.update()
