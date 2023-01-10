@@ -1,0 +1,144 @@
+import pygame as pg
+import tkinter as tk
+import sys
+import random
+
+
+#スクリーンを管理するクラス
+class ScreenClass:
+    def __init__(self,title,width_height,file):
+        pg.display.set_caption(title)
+        self.sfc = pg.display.set_mode(width_height)
+        self.rct = self.sfc.get_rect()
+        self.bgi_sfc = pg.image.load(file)
+        self.bgi_rct = self.bgi_sfc.get_rect()
+
+    def blit(self):
+        self.sfc.blit(self.bgi_sfc,self.bgi_rct)
+
+#迷路のマスを管理するクラス
+#壁のマス、道のマス以外にもcookieのマスが機能するように実装する必要あり
+
+class SquaresClass:
+    def __init__(self,size,x,y,color):
+        self.sfc = pg.Surface((size,size))
+        self.rct = self.sfc.get_rect()
+        pg.draw.rect(self.sfc,color,self.rct)
+        self.rct.centerx = x
+        self.rct.centery = y
+        self.color = color
+
+    def blit(self,scrn_obj):
+        scrn_obj.sfc.blit(self.sfc,self.rct)
+
+#迷路を管理するクラス
+class MazeClass:
+    def __init__(self,h,w):
+        self.tate = w
+        self.yoko = h
+        self.maze_lst = []
+
+    #時間がなかったため、maze_maker.pyからお借りしました。0,1の代わりにSquaresClassが格納されています
+
+    def make_maze(self):
+        XP = [ 0, 1, 0, -1]
+        YP = [-1, 0, 1,  0]
+        self.maze_lst = [[SquaresClass(50,i*50,j*50,"black") for i in range(self.tate)] for j in range(self.yoko)]
+        for maze_yoko in range(1, len(self.maze_lst)-1): #壁ではない部分を0にする
+            for cell in range(1, len(self.maze_lst[0])-1):
+                self.maze_lst[maze_yoko][cell] = SquaresClass(50,cell*50,maze_yoko*50,"white")
+        for y in range(2, self.tate-2, 2): #迷路を作る
+            for x in range(2, self.yoko-2, 2):
+                self.maze_lst[x][y] = SquaresClass(50,y*50,x*50,"black")
+                if x > 2:
+                    rnd = random.randint(0, 2)
+                else:
+                    rnd = random.randint(0, 3)
+                self.maze_lst[x+YP[rnd]][y+XP[rnd]] = SquaresClass(50,(y+XP[rnd])*50,(x+YP[rnd])*50,"black")     
+
+    def blit(self,scrn_obj):
+        for y in range(self.tate):
+            for x in range(self.yoko):
+                self.maze_lst[x][y].blit(scrn_obj)
+
+#プレイヤーを管理するクラス
+class PlayerClass:
+    key_delta = {
+        pg.K_UP:    [0, -1],
+        pg.K_DOWN:  [0, +1],
+        pg.K_LEFT:  [-1, 0],
+        pg.K_RIGHT: [+1, 0],
+    }
+
+    def __init__(self,file,zoom,center):
+        self.sfc = pg.image.load(file)
+        self.sfc = pg.transform.rotozoom(self.sfc, 0,zoom)
+        self.rct = self.sfc.get_rect()
+        self.rct.center = center
+
+    def blit(self,scrn_obj):
+        scrn_obj.sfc.blit(self.sfc,self.rct)
+    
+    #今のままでは自由気ままに動けてしまうので、グリッド単位で動かす必要がある(要修正)。
+    def update(self,scrn_obj):
+        key_dct = pg.key.get_pressed()
+        for key, delta in self.key_delta.items():
+            if key_dct[key]:
+                self.rct.centerx += delta[0]
+                self.rct.centery += delta[1]
+        self.blit(scrn_obj)
+
+#敵キャラを管理するクラス
+class EnemyClass:
+
+    delta = [
+        (0, +1),
+        (0, -1),
+        (+1, 0),
+        (-1, 0),
+    ]
+
+    def __init__(self,file,zoom,center):
+        self.sfc = pg.image.load(file)
+        self.sfc = pg.transform.rotozoom(self.sfc,0, zoom)
+        self.rct = self.sfc.get_rect()
+        self.rct.center = center
+
+    def blit(self,scrn_obj):
+        scrn_obj.sfc.blit(self.sfc,self.rct)
+
+    #PlayerClassと同様に自由気ままに動いてしまうので、要修正
+    def update(self,scrn_obj):
+        rnd = random.randint(0,3)
+        self.rct.centerx += self.delta[rnd][0]
+        self.rct.centery += self.delta[rnd][1]
+        self.blit(scrn_obj)
+
+def main():
+    clock = pg.time.Clock()
+    pg.key.set_repeat(50,300)
+
+    screen = ScreenClass("test",(1600,900),"fig/pg_bg.jpg")
+    player = PlayerClass("fig/3.png",1.0,(100, 100)) 
+    player.blit(screen)
+    enemy = EnemyClass("fig/1.png",1.0,(500, 500))
+    maze = MazeClass(20,30)
+    maze.make_maze()
+    while True:
+        screen.blit()
+        maze.blit(screen) 
+
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                return
+
+        player.update(screen)
+        enemy.update(screen)      
+        pg.display.update()
+        clock.tick(1000)
+
+if __name__ == "__main__":
+    pg.init()
+    main()
+    pg.quit()
+    sys.exit()
